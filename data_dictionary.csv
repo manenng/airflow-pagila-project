@@ -1,0 +1,75 @@
+Layer,Database,Schema,Table,Column,Data Type,Nullable,Key,Description
+Raw,bank_source,public,raw_bank,id,SERIAL,No,PK,Auto-increment surrogate key
+Raw,bank_source,public,raw_bank,age,INTEGER,Yes,—,Customer age in years
+Raw,bank_source,public,raw_bank,job,VARCHAR(50),Yes,—,"Occupation (e.g. admin, technician, retired)"
+Raw,bank_source,public,raw_bank,marital,VARCHAR(30),Yes,—,"Marital status: married, single, divorced"
+Raw,bank_source,public,raw_bank,education,VARCHAR(50),Yes,—,Highest education level attained
+Raw,bank_source,public,raw_bank,default_flag,VARCHAR(20),Yes,—,Has credit in default? yes / no / unknown
+Raw,bank_source,public,raw_bank,housing,VARCHAR(20),Yes,—,Has housing loan? yes / no / unknown
+Raw,bank_source,public,raw_bank,loan,VARCHAR(20),Yes,—,Has personal loan? yes / no / unknown
+Raw,bank_source,public,raw_bank,contact,VARCHAR(30),Yes,—,Contact communication type: cellular / telephone
+Raw,bank_source,public,raw_bank,month,VARCHAR(20),Yes,—,Month of last contact (jan–dec)
+Raw,bank_source,public,raw_bank,day_of_week,VARCHAR(20),Yes,—,Day of last contact (mon–fri)
+Raw,bank_source,public,raw_bank,duration,INTEGER,Yes,—,Last contact duration in seconds
+Raw,bank_source,public,raw_bank,campaign,INTEGER,Yes,—,Number of contacts during this campaign
+Raw,bank_source,public,raw_bank,pdays,INTEGER,Yes,—,Days since last contact from previous campaign (999 = not contacted)
+Raw,bank_source,public,raw_bank,previous,INTEGER,Yes,—,Number of contacts before this campaign
+Raw,bank_source,public,raw_bank,poutcome,VARCHAR(50),Yes,—,Outcome of previous campaign: success / failure / nonexistent
+Raw,bank_source,public,raw_bank,emp_var_rate,NUMERIC,Yes,—,Employment variation rate (quarterly indicator)
+Raw,bank_source,public,raw_bank,cons_price_idx,NUMERIC,Yes,—,Consumer price index (monthly indicator)
+Raw,bank_source,public,raw_bank,cons_conf_idx,NUMERIC,Yes,—,Consumer confidence index (monthly indicator)
+Raw,bank_source,public,raw_bank,euribor3m,NUMERIC,Yes,—,Euribor 3-month rate (daily indicator)
+Raw,bank_source,public,raw_bank,nr_employed,NUMERIC,Yes,—,Number of employees (quarterly indicator in thousands)
+Raw,bank_source,public,raw_bank,y,VARCHAR(10),Yes,—,Target variable — subscribed to term deposit? yes / no
+Source,bank_source,public,source_customer,customer_id,BIGINT,No,PK,Derived from raw_bank.id
+Source,bank_source,public,source_customer,age,INTEGER,Yes,—,Customer age in years
+Source,bank_source,public,source_customer,job,VARCHAR(50),Yes,—,Occupation type
+Source,bank_source,public,source_customer,marital,VARCHAR(30),Yes,—,Marital status
+Source,bank_source,public,source_customer,education,VARCHAR(50),Yes,—,Education level
+Source,bank_source,public,source_customer,default_flag,VARCHAR(20),Yes,—,Credit default flag
+Source,bank_source,public,source_customer,housing,VARCHAR(20),Yes,—,Housing loan flag
+Source,bank_source,public,source_customer,loan,VARCHAR(20),Yes,—,Personal loan flag
+Source,bank_source,public,source_campaign,campaign_id,BIGINT,No,PK,Derived from raw_bank.id
+Source,bank_source,public,source_campaign,contact,VARCHAR(30),Yes,—,Contact channel used
+Source,bank_source,public,source_campaign,month,VARCHAR(20),Yes,—,Month of last contact
+Source,bank_source,public,source_campaign,day_of_week,VARCHAR(20),Yes,—,Day of last contact
+Source,bank_source,public,source_campaign,duration,INTEGER,Yes,—,Call duration in seconds
+Source,bank_source,public,source_campaign,campaign,INTEGER,Yes,—,Number of contacts in current campaign
+Source,bank_source,public,source_campaign,pdays,INTEGER,Yes,—,Days since previous campaign contact (999 = none)
+Source,bank_source,public,source_campaign,previous,INTEGER,Yes,—,Contacts before this campaign
+Source,bank_source,public,source_campaign,poutcome,VARCHAR(50),Yes,—,Outcome of previous campaign
+Source,bank_source,public,source_marketing_fact,fact_id,BIGINT,No,PK,Derived from raw_bank.id
+Source,bank_source,public,source_marketing_fact,customer_id,BIGINT,No,FK,References source_customer.customer_id
+Source,bank_source,public,source_marketing_fact,campaign_id,BIGINT,No,FK,References source_campaign.campaign_id
+Source,bank_source,public,source_marketing_fact,emp_var_rate,NUMERIC,Yes,—,Employment variation rate
+Source,bank_source,public,source_marketing_fact,cons_price_idx,NUMERIC,Yes,—,Consumer price index
+Source,bank_source,public,source_marketing_fact,cons_conf_idx,NUMERIC,Yes,—,Consumer confidence index
+Source,bank_source,public,source_marketing_fact,euribor3m,NUMERIC,Yes,—,Euribor 3-month rate
+Source,bank_source,public,source_marketing_fact,nr_employed,NUMERIC,Yes,—,Number of employees (quarterly)
+Source,bank_source,public,source_marketing_fact,subscribed,INTEGER,No,—,Term deposit subscription result: 1 = yes / 0 = no
+Warehouse,bank_dw,dw,dim_customer,customer_id,BIGINT,No,PK,Unique customer identifier
+Warehouse,bank_dw,dw,dim_customer,age,INTEGER,Yes,—,Customer age in years
+Warehouse,bank_dw,dw,dim_customer,job,VARCHAR(50),Yes,—,Occupation type
+Warehouse,bank_dw,dw,dim_customer,marital,VARCHAR(30),Yes,—,Marital status
+Warehouse,bank_dw,dw,dim_customer,education,VARCHAR(50),Yes,—,Education level
+Warehouse,bank_dw,dw,dim_customer,default_flag,VARCHAR(20),Yes,—,Credit default flag
+Warehouse,bank_dw,dw,dim_customer,housing,VARCHAR(20),Yes,—,Housing loan flag
+Warehouse,bank_dw,dw,dim_customer,loan,VARCHAR(20),Yes,—,Personal loan flag
+Warehouse,bank_dw,dw,dim_campaign,campaign_id,BIGINT,No,PK,Unique campaign contact identifier
+Warehouse,bank_dw,dw,dim_campaign,contact,VARCHAR(30),Yes,—,Contact communication channel
+Warehouse,bank_dw,dw,dim_campaign,month,VARCHAR(20),Yes,—,Month of last contact
+Warehouse,bank_dw,dw,dim_campaign,day_of_week,VARCHAR(20),Yes,—,Day of last contact
+Warehouse,bank_dw,dw,dim_campaign,duration,INTEGER,Yes,—,Call duration in seconds
+Warehouse,bank_dw,dw,dim_campaign,campaign,INTEGER,Yes,—,Number of contacts in this campaign
+Warehouse,bank_dw,dw,dim_campaign,pdays,INTEGER,Yes,—,Days since last contact in previous campaign
+Warehouse,bank_dw,dw,dim_campaign,previous,INTEGER,Yes,—,Contacts performed before this campaign
+Warehouse,bank_dw,dw,dim_campaign,poutcome,VARCHAR(50),Yes,—,Previous campaign outcome
+Warehouse,bank_dw,dw,fact_marketing,fact_id,BIGINT,No,PK,Unique fact record identifier
+Warehouse,bank_dw,dw,fact_marketing,customer_id,BIGINT,No,FK → dim_customer,Foreign key to customer dimension
+Warehouse,bank_dw,dw,fact_marketing,campaign_id,BIGINT,No,FK → dim_campaign,Foreign key to campaign dimension
+Warehouse,bank_dw,dw,fact_marketing,emp_var_rate,NUMERIC,Yes,—,Employment variation rate (quarterly economic indicator)
+Warehouse,bank_dw,dw,fact_marketing,cons_price_idx,NUMERIC,Yes,—,Consumer price index (monthly economic indicator)
+Warehouse,bank_dw,dw,fact_marketing,cons_conf_idx,NUMERIC,Yes,—,Consumer confidence index (monthly indicator)
+Warehouse,bank_dw,dw,fact_marketing,euribor3m,NUMERIC,Yes,—,Euribor 3-month rate (daily market indicator)
+Warehouse,bank_dw,dw,fact_marketing,nr_employed,NUMERIC,Yes,—,Number of employees (quarterly in thousands)
+Warehouse,bank_dw,dw,fact_marketing,subscribed,INTEGER,No,—,Target measure — 1 = subscribed to term deposit / 0 = did not
