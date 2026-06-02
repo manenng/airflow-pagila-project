@@ -186,6 +186,16 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    ports:
+      - "3000:3000"
+    environment:
+      - MB_DB_TYPE=h2
+      - MB_DB_FILE_PATH=/metabase-data/metabase.db
+    depends_on:
+      - bank_dw
 
 volumes:
   postgres-db-volume:
